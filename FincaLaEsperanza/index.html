@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Finca La Esperanza</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- ================= LOGIN ================= -->
+  <section id="view-login" class="view login-view active">
+    <div class="login-wrap">
+      <div class="brand-badge">🌱</div>
+      <h1 class="brand-title">Finca La Esperanza</h1>
+      <p class="brand-sub">Registra tu trabajo aunque no haya internet</p>
+
+      <form id="loginForm" class="login-form">
+        <label class="field">
+          <span>Usuario</span>
+          <input type="text" id="loginUser" placeholder="maria.rojas" autocomplete="username" required>
+        </label>
+        <label class="field">
+          <span>Contraseña</span>
+          <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" required>
+        </label>
+        <p id="loginError" class="field-error" hidden>Escribe un usuario y una contraseña para entrar.</p>
+        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+      </form>
+
+      <p class="login-note">📴 El acceso queda guardado en este dispositivo, aunque no haya señal.</p>
+    </div>
+  </section>
+
+  <!-- ================= APP SHELL ================= -->
+  <div id="appShell" class="app-shell" hidden>
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="leaf-icon">🌱</span>
+        <div>
+          <div class="topbar-title">Finca La Esperanza</div>
+          <div class="topbar-sub" id="viewTitle">Panel principal</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button id="signalBtn" class="signal-pill" type="button" title="Simular señal satelital">
+          <span id="signalDot" class="signal-dot"></span>
+          <span id="signalLabel">Sin señal</span>
+        </button>
+        <div class="avatar" id="userAvatar">MR</div>
+      </div>
+    </header>
+
+    <main class="content" id="content">
+
+      <!-- ---- PANEL ---- -->
+      <section id="view-panel" class="view">
+        <p class="view-lead">Vista general de la operación de campo y oficina.</p>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="statCosecha">0 kg</div>
+            <div class="stat-label">Cosecha registrada</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statBajo">0</div>
+            <div class="stat-label">Insumos con stock bajo</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statTrabajadores">0</div>
+            <div class="stat-label">Trabajadores activos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statPendientes">0</div>
+            <div class="stat-label">Pendientes por sincronizar</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Cosecha por lote (kg)</h2>
+          <div class="bars" id="loteChart"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Últimos registros</h2>
+          <div id="ultimosRegistros" class="mini-list"></div>
+        </div>
+
+        <div id="syncBanner" class="sync-banner" hidden>
+          <p id="syncBannerText">registros esperando conexión satelital</p>
+          <button id="syncNowBtn" class="btn btn-dark" type="button">Sincronizar ahora</button>
+        </div>
+      </section>
+
+      <!-- ---- COSECHAS ---- -->
+      <section id="view-cosechas" class="view">
+        <div class="view-header-row">
+          <p class="view-lead">Registro histórico de cosecha por lote y trabajador.</p>
+          <button class="btn btn-primary btn-sm" id="btnNuevaCosecha" type="button">+ Nueva cosecha</button>
+        </div>
+
+        <div class="stat-grid stat-grid-3">
+          <div class="stat-card">
+            <div class="stat-value" id="cosTotal">0 kg</div>
+            <div class="stat-label">Total registrado</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="cosProm">0 kg</div>
+            <div class="stat-label">Promedio por registro</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="cosTopLote">—</div>
+            <div class="stat-label">Lote con más producción</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Historial de cosecha</h2>
+          <div id="cosechaList" class="record-list"></div>
+        </div>
+      </section>
+
+      <!-- ---- INVENTARIO ---- -->
+      <section id="view-inventario" class="view">
+        <div class="view-header-row">
+          <p class="view-lead">Control de fertilizantes, herramientas y materiales.</p>
+          <button class="btn btn-primary btn-sm" id="btnNuevoInsumo" type="button">+ Registrar insumo</button>
+        </div>
+
+        <div class="stat-grid stat-grid-2">
+          <div class="stat-card">
+            <div class="stat-value" id="invTotal">0</div>
+            <div class="stat-label">Insumos registrados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="invBajo">0</div>
+            <div class="stat-label">Con stock bajo</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Insumos en bodega</h2>
+          <div id="inventarioList" class="record-list"></div>
+        </div>
+      </section>
+
+      <!-- ---- TRABAJADORES ---- -->
+      <section id="view-trabajadores" class="view">
+        <div class="view-header-row">
+          <p class="view-lead">Control de personal y asistencia por punto de registro.</p>
+          <button class="btn btn-primary btn-sm" id="btnNuevoTrabajador" type="button">+ Agregar</button>
+        </div>
+
+        <div class="stat-grid stat-grid-3">
+          <div class="stat-card">
+            <div class="stat-value" id="trTotal">0</div>
+            <div class="stat-label">Totales</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="trPresentes">0</div>
+            <div class="stat-label">Presentes hoy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="trAusentes">0</div>
+            <div class="stat-label">Ausentes hoy</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Listado de trabajadores</h2>
+          <p class="hint">Toca el estado para marcar presente / ausente.</p>
+          <div id="trabajadorList" class="record-list"></div>
+        </div>
+      </section>
+
+      <!-- ---- REPORTES ---- -->
+      <section id="view-reportes" class="view">
+        <div class="view-header-row">
+          <p class="view-lead">Consolidado de cosecha, inventario y asistencia.</p>
+          <button class="btn btn-dark btn-sm" id="btnExportar" type="button">Exportar PDF</button>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Cosecha por lote (kg)</h2>
+          <div class="bars" id="reporteChart"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Insumos por categoría</h2>
+          <div id="categoriaBars" class="cat-bars"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Asistencia</h2>
+          <p id="asistenciaResumen" class="asistencia-line"></p>
+        </div>
+      </section>
+
+      <!-- ---- CONFIGURACIÓN ---- -->
+      <section id="view-config" class="view">
+        <p class="view-lead">Cuenta, sincronización y notificaciones del sistema.</p>
+
+        <div class="card">
+          <h2 class="card-title">Cuenta</h2>
+          <div class="account-row">
+            <div class="avatar avatar-lg" id="configAvatar">MR</div>
+            <div>
+              <div class="account-name" id="configName">—</div>
+              <div class="account-role">Administrador(a) · usuario local</div>
+            </div>
+          </div>
+          <button class="link-btn" id="btnChangePass" type="button">Cambiar contraseña</button>
+          <button class="link-btn link-btn-danger" id="btnLogout" type="button">Cerrar sesión</button>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Sincronización</h2>
+          <div class="toggle-row">
+            <span>Sincronizar automáticamente al detectar señal</span>
+            <label class="switch"><input type="checkbox" id="cfgAutoSync"><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Modo ahorro de datos (enlace satelital)</span>
+            <label class="switch"><input type="checkbox" id="cfgSaveData"><span class="slider"></span></label>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Notificaciones</h2>
+          <div class="toggle-row">
+            <span>Alertas de stock bajo</span>
+            <label class="switch"><input type="checkbox" id="cfgNotifStock"><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Registros pendientes por sincronizar</span>
+            <label class="switch"><input type="checkbox" id="cfgNotifPend"><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span>Resumen semanal por correo</span>
+            <label class="switch"><input type="checkbox" id="cfgNotifWeekly"><span class="slider"></span></label>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Datos de ejemplo</h2>
+          <p class="hint">Esto borra todo lo guardado en este dispositivo y vuelve a cargar los datos de ejemplo.</p>
+          <button class="btn btn-outline btn-block" id="btnReset" type="button">Restablecer datos de ejemplo</button>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="tabbar">
+      <button class="tab-btn active" data-view="panel" type="button">
+        <span class="tab-icon">🏠</span><span>Panel</span>
+      </button>
+      <button class="tab-btn" data-view="cosechas" type="button">
+        <span class="tab-icon">☕</span><span>Cosechas</span>
+      </button>
+      <button class="tab-btn" data-view="inventario" type="button">
+        <span class="tab-icon">📦</span><span>Insumos</span>
+      </button>
+      <button class="tab-btn" data-view="trabajadores" type="button">
+        <span class="tab-icon">👥</span><span>Personal</span>
+      </button>
+      <button class="tab-btn" data-view="reportes" type="button">
+        <span class="tab-icon">📈</span><span>Reportes</span>
+      </button>
+      <button class="tab-btn" data-view="config" type="button">
+        <span class="tab-icon">⚙️</span><span>Ajustes</span>
+      </button>
+    </nav>
+  </div>
+
+</div>
+
+<!-- ================= MODAL (formularios) ================= -->
+<div id="modalOverlay" class="modal-overlay" hidden>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h2 class="modal-title" id="modalTitle">Nuevo registro</h2>
+    <form id="modalForm" class="modal-form"></form>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
